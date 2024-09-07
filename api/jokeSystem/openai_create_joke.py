@@ -24,12 +24,13 @@ def generate_joke(client: OpenAI,prompt: str, max_tokens=100):
         return f"Error generating joke: {str(e)}"
     
 
-def create_joke(things: list, api_key: str):
+def create_joke(r_things: list, api_key: str):
     things = []
-    if things:
-        things = things
+    if r_things:
+        things = r_things
     if things == [] or things is None:
         things = ["spoon"]
+    print("Things: ", things)
     
     client = OpenAI(api_key= api_key)
     joke_prompt = f"Create a small punch line joke using {','.join([thing for thing in things])} object."
