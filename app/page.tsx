@@ -28,7 +28,7 @@ export default function Home() {
 
   const handleHeckelObject = async () => {
     setLoading(true);
-    setAudioSrc("");
+    setAudioSrc(null);
     setError("");
 
     try {
@@ -63,7 +63,7 @@ export default function Home() {
 
   const handleObjectSelect = async (selectedObject: any) => {
     setLoading(true);
-    setAudioSrc("");
+    setAudioSrc(null);
     setError("");
 
     try {
