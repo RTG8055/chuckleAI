@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 
 const objectsList = [
@@ -21,6 +21,27 @@ const ObjectSelection = ({ onSelect }) => {
     setCustomObject("");
     console.log(object);
     onSelect(object)
+  };
+
+  const audioRef = useRef(null);
+
+  // ... existing functions ...
+
+  const playAudio = () => {
+    if (audioRef.current) {
+      const randomNumber = Math.floor(Math.random() * 5) + 1;
+      const audioFile = `/audio/${randomNumber}.mp3`;
+      audioRef.current.src = audioFile;
+      audioRef.current.load(); 
+      audioRef.current.play().catch(error => console.error('Audio playback failed:', error));
+    }
+  };
+
+  const stopAudio = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
   };
 
   const handleSubmit = () => {
@@ -52,6 +73,11 @@ const ObjectSelection = ({ onSelect }) => {
                   : "bg-gray-200"
               }`}
               onClick={() => handleSelect(object.name)}
+              onMouseEnter={() => {
+                stopAudio(); // Stop any currently playing audio
+                playAudio(); // Play new audio
+              }}
+              onMouseLeave={stopAudio}
             >
               <Image
               src={object.image}
@@ -64,6 +90,7 @@ const ObjectSelection = ({ onSelect }) => {
           ))}
         </div>
       </div>
+      <audio ref={audioRef} preload="auto"/>
     </div>
   );
 };
