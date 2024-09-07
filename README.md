@@ -7,7 +7,7 @@ python3 -m venv path/to/venv python=3.11
 
 ```
 source path/to/venv/bin/activate
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 ```
