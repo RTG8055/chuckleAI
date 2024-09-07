@@ -37,3 +37,7 @@ next-env.d.ts
 
 # virtual environment
 .python-version
+
+#pycache
+
+api/__pycache__/
