@@ -7,6 +7,7 @@ export default function Home() {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioContextRef = useRef<AudioContext | null>(null);
   const sourceNodeRef = useRef<AudioBufferSourceNode | null>(null);
+  const [text, setText] = useState("This is a test joke")
 
   useEffect(() => {
     return () => {
@@ -24,7 +25,7 @@ export default function Home() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ text: 'Hello, how can I help you today?' }),
+        body: JSON.stringify({ text: text }),
       });
 
       if (!response.ok) {
