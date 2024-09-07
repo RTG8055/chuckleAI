@@ -18,7 +18,7 @@ class GenerateResponse(BaseModel):
 
 @app.post("/api/v1/generate", response_model=GenerateResponse)
 def generate_jokes(request: GenerateRequest) -> GenerateResponse:
-    # This is a placeholder. In a real application, you'd generate actual jokes here.
+    # This is a placeholder. 
     jokes: List[str] = [f"Joke {i+1} about {request.theme}" for i in range(request.num_jokes)]
     
     return GenerateResponse(jokes=jokes)
