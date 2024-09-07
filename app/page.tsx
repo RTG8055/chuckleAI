@@ -8,7 +8,7 @@ import MovingButton from "./components/MovingButton";
 import './globals.css'
 
 export default function Home() {
-  const [audioSrc, setAudioSrc] = useState("");
+  const [audioSrc, setAudioSrc] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [customObject, setCustomObject] = useState("");
@@ -23,6 +23,40 @@ export default function Home() {
       }
     };
   }, []);
+
+
+  const handleHeckelObject = async () => {
+    setLoading(true);
+    setAudioSrc("");
+    setError("");
+
+    try {
+      const response = await axios.post("/api/generate_heckle_response", {
+        object: customObject,
+      });
+      const audioResponse = await fetch('/api/tts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text: response.data.joke }),
+      });
+
+      if (!audioResponse.ok) {
+        throw new Error('Failed to generate audio');
+      }
+
+      const arrayBuffer = await audioResponse.arrayBuffer();
+      await playAudioBuffer(arrayBuffer);
+
+    } catch (error) {
+      setError("Failed to fetch the joke. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+    
+    
+  }
 
   const handleObjectSelect = async (selectedObject: any) => {
     setLoading(true);
@@ -117,8 +151,8 @@ export default function Home() {
             <ObjectSelection onSelect={handleImageSelection} />
             {/* Repeat <ObjectSelection /> component as needed */}
           </div>
-          <h2 className="text-white text-md">or</h2>
-          <div className="mt-4 flex flex-col">
+          {audioSrc === null && <h2 className="text-white text-md">or</h2>}
+          {audioSrc === null && <div className="mt-4 flex flex-col">
             <input
               type="text"
               placeholder="Type any object"
@@ -142,14 +176,21 @@ export default function Home() {
             Use Random Object
           </MovingButton>
         </div>
-          </div>
+          </div>}
         </div>
-
+        
         {loading && (
           <div className="flex justify-center mt-4">
             <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-blue-500"></div>
           </div>
         )}
+        {audioSrc !== null && loading === false &&  <MovingButton
+            onClick={handleHeckelObject}
+            className="bg-gray-500 text-white px-4 py-2 rounded"
+            maxMoves={1}
+          >
+           Heckle
+          </MovingButton>}
 
         {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
 
