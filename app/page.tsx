@@ -15,6 +15,7 @@ export default function Home() {
   const audioContextRef = useRef<AudioContext | null>(null);
   const sourceNodeRef = useRef<AudioBufferSourceNode | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [joke, setJoke] = useState("");
 
   useEffect(() => {
     return () => {
@@ -32,8 +33,10 @@ export default function Home() {
 
     try {
       const response = await axios.post("/api/generate_heckle_response", {
-        object: customObject,
+        object: joke,
       });
+
+      setJoke(response.data.joke);
       const audioResponse = await fetch('/api/tts', {
         method: 'POST',
         headers: {
@@ -70,7 +73,7 @@ export default function Home() {
       });
 
       console.log(response)
-
+      setJoke(response.data.joke);
       const audioResponse = await fetch('/api/tts', {
         method: 'POST',
         headers: {
@@ -184,13 +187,13 @@ export default function Home() {
             <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-blue-500"></div>
           </div>
         )}
-        {audioSrc !== null && loading === false &&  <MovingButton
+        {audioSrc !== null && loading === false &&  <div className="mt-4 flex flex-row items-center gap-4"> <MovingButton
             onClick={handleHeckelObject}
-            className="bg-gray-500 text-white px-4 py-2 rounded"
+            className="bg-blue-700 text-white px-4 py-2 rounded"
             maxMoves={1}
           >
            Heckle
-          </MovingButton>}
+          </MovingButton></div>}
 
         {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
 
