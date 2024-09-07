@@ -13,15 +13,15 @@ export default function Home() {
   const [error, setError] = useState("");
   const [customObject, setCustomObject] = useState("");
 
-  const handleObjectSelect = async (selectedObject) => {
+  const handleObjectSelect = async (selectedObject: any) => {
     setLoading(true);
     setAudioSrc("");
     setError("");
 
     try {
       // API call to backend to get the audio stream of the joke
-      const response = await axios.post("/api/v1/generate", {
-        object: selectedObject,
+      const response = await axios.post("/api/generate", {
+        object: customObject,
       });
 
       // Assuming the response contains an audio URL
@@ -74,14 +74,14 @@ export default function Home() {
           <MovingButton
             onClick={handleGenerateJoke}
             className="bg-blue-700 text-white px-4 py-2 rounded"
-            maxMoves={5}
+            maxMoves={1}
           >
             Generate Joke
           </MovingButton>
           <MovingButton
             onClick={handleRandomObject}
             className="bg-gray-500 text-white px-4 py-2 rounded"
-            maxMoves={5}
+            maxMoves={1}
           >
             Use Random Object
           </MovingButton>
