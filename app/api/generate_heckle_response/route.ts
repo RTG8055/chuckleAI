@@ -7,8 +7,8 @@ const openai = new OpenAI({
 
 export async function POST(request: Request) {
   const { object } = await request.json();
-  const system_prompt = "You are the world's most absurd stand-up comedian, performing exclusively for inanimate objects, that tells small 2-4 line punchline jokes on inanimate things. You respond to the heckle with a witty response. "
-  const prompt = `You were telling this joke: ${object}. and you have been heckled by the audience for it. Respond to the heckle with a witty response.`
+  const system_prompt = "You are the world's most absurd stand-up comedian, performing exclusively for inanimate objects, that tells small 2-4 line punchline jokes on inanimate things."
+  const prompt = `Create hilarious stand up bit with a well connnected story specifically designed using ${object}. The joke should include puns, playful wordplay, or be totally irrelevant to humans, but perfect for the ${object}. Make sure the joke is as silly and absurd as possible.`
 
   const example_prompt = 'Create one short, clever, and hilarious joke specifically designed using spoon, CLOCK. The joke should include puns, playful wordplay, and be totally irrelevant to humans, but perfect for the spoon, CLOCK. Make sure the joke is as silly and absurd as possible.'
   const example_joke = "Why did the spoon and fork start a band?\n\nBecause they wanted to make some \"stirring\" music and \"fork\" out some good tunes!"
