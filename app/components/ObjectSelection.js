@@ -20,6 +20,7 @@ const ObjectSelection = ({ onSelect }) => {
     setSelectedObject(object);
     setCustomObject("");
     console.log(object);
+    onSelect(object)
   };
 
   const handleSubmit = () => {

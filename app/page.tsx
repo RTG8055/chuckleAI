@@ -32,7 +32,7 @@ export default function Home() {
     try {
       // API call to backend to get the audio stream of the joke
       const response = await axios.post("/api/generate", {
-        object: customObject,
+        object: selectedObject,
       });
 
       console.log(response)
@@ -59,11 +59,17 @@ export default function Home() {
     }
   };
 
+  const handleImageSelection = (imageName) => {
+    console.log(imageName)
+    setCustomObject(imageName);
+  }
+
   const handleCustomObjectChange = (e) => {
     setCustomObject(e.target.value);
   };
 
   const handleGenerateJoke = () => {
+    console.log(customObject)
     if (customObject) {
       handleObjectSelect(customObject);
     }
@@ -73,6 +79,8 @@ export default function Home() {
     const randomObjects = ["cat", "pizza"];
     const randomObject =
       randomObjects[Math.floor(Math.random() * randomObjects.length)];
+    console.log(randomObject)
+    setCustomObject(randomObject)
     handleObjectSelect(randomObject);
   };
 
@@ -106,7 +114,7 @@ export default function Home() {
         <div className="flex flex-col gap-3 items-center">
           <h2 className="text-white text-md">Select an object</h2>
           <div className="flex">
-            <ObjectSelection onSelect={handleObjectSelect} />
+            <ObjectSelection onSelect={handleImageSelection} />
             {/* Repeat <ObjectSelection /> component as needed */}
           </div>
           <h2 className="text-white text-md">or</h2>
