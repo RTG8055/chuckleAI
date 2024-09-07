@@ -8,7 +8,7 @@ import MovingButton from "./components/MovingButton";
 import './globals.css'
 
 export default function Home() {
-  const [audioSrc, setAudioSrc] = useState(null);
+  const [audioSrc, setAudioSrc] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [customObject, setCustomObject] = useState("");
@@ -28,7 +28,7 @@ export default function Home() {
 
   const handleHeckelObject = async () => {
     setLoading(true);
-    setAudioSrc(null);
+    setAudioSrc("");
     setError("");
 
     try {
@@ -63,7 +63,7 @@ export default function Home() {
 
   const handleObjectSelect = async (selectedObject: any) => {
     setLoading(true);
-    setAudioSrc(null);
+    setAudioSrc("");
     setError("");
 
     try {
@@ -74,6 +74,7 @@ export default function Home() {
 
       console.log(response)
       setJoke(response.data.joke);
+    
       const audioResponse = await fetch('/api/tts', {
         method: 'POST',
         headers: {
