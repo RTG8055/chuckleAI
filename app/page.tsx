@@ -59,12 +59,12 @@ export default function Home() {
     }
   };
 
-  const handleImageSelection = (imageName) => {
+  const handleImageSelection = (imageName: any) => {
     console.log(imageName)
     setCustomObject(imageName);
   }
 
-  const handleCustomObjectChange = (e) => {
+  const handleCustomObjectChange = (e: any) => {
     setCustomObject(e.target.value);
   };
 
