@@ -25,3 +25,10 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+.backgroundGif {
+  background-image: url('/path/to/your/gif.gif');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}

@@ -1,31 +1,33 @@
 "use client";
 
-import { useState } from 'react';
-import axios from 'axios';
-import ObjectSelection from './components/ObjectSelection';
-import AudioPlayer from './components/AudioPlayer';
+import { useState } from "react";
+import axios from "axios";
+import ObjectSelection from "./components/ObjectSelection";
+import AudioPlayer from "./components/AudioPlayer";
+import MovingButton from "./components/MovingButton";
+import './globals.css'
 
 export default function Home() {
-  const [audioSrc, setAudioSrc] = useState('');
+  const [audioSrc, setAudioSrc] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [customObject, setCustomObject] = useState('');
+  const [error, setError] = useState("");
+  const [customObject, setCustomObject] = useState("");
 
   const handleObjectSelect = async (selectedObject) => {
     setLoading(true);
-    setAudioSrc('');
-    setError('');
-    
+    setAudioSrc("");
+    setError("");
+
     try {
       // API call to backend to get the audio stream of the joke
-      const response = await axios.post('/api/v1/generate', {
+      const response = await axios.post("/api/v1/generate", {
         object: selectedObject,
       });
 
       // Assuming the response contains an audio URL
       setAudioSrc(response.data.audioUrl);
     } catch (error) {
-      setError('Failed to fetch the joke. Please try again.');
+      setError("Failed to fetch the joke. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -42,44 +44,48 @@ export default function Home() {
   };
 
   const handleRandomObject = () => {
-    const randomObjects = ['cat', 'pizza'];
-    const randomObject = randomObjects[Math.floor(Math.random() * randomObjects.length)];
+    const randomObjects = ["cat", "pizza"];
+    const randomObject =
+      randomObjects[Math.floor(Math.random() * randomObjects.length)];
     handleObjectSelect(randomObject);
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center py-10 bg-white">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-7xl">
-        <h1 className="text-2xl font-bold text-center mb-6">
-          AI Standup App
-        </h1>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          <ObjectSelection onSelect={handleObjectSelect} />
-          {/* Repeat <ObjectSelection /> component as needed */}
+    <div className={`min-h-screen flex flex-col items-center justify-center py-5 `}>
+      <div className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat z-[-100] bg-black"></div>
+      <div className="p-4 rounded-lg  w-[60%] max-w-7xl">
+        <p className="text-5xl text-white text-center my-2 mb-8">Chuckle AI</p>
+        <div className="flex flex-col gap-3 items-center">
+          <h2 className="text-white text-md">Select an object</h2>
+          <div className="flex">
+            <ObjectSelection onSelect={handleObjectSelect} />
+            {/* Repeat <ObjectSelection /> component as needed */}
+          </div>
+          <h2 className="text-white text-md">or</h2>
+          <div className="mt-4 flex flex-col">
+            <input
+              type="text"
+              placeholder="Type any object"
+              value={customObject}
+              onChange={handleCustomObjectChange}
+              className="border p-2 rounded mb-2 w-full max-w-md text-black" // Added text-black class
+            />
+            <div className="mt-2 flex flex-row items-center gap-2">
+          <MovingButton
+            onClick={handleGenerateJoke}
+            className="bg-blue-700 text-white px-4 py-2 rounded"
+            maxMoves={5}
+          >
+            Generate Joke
+          </MovingButton>
+          <MovingButton
+            onClick={handleRandomObject}
+            className="bg-gray-500 text-white px-4 py-2 rounded"
+            maxMoves={5}
+          >
+            Use Random Object
+          </MovingButton>
         </div>
-
-        <div className="mt-4 flex flex-col items-center">
-          <input
-            type="text"
-            placeholder="Type any object"
-            value={customObject}
-            onChange={handleCustomObjectChange}
-            className="border p-2 rounded mb-4 w-full max-w-md text-black" // Added text-black class
-          />
-          <div className="flex space-x-4">
-            <button
-              onClick={handleGenerateJoke}
-              className="bg-blue-500 text-white px-4 py-2 rounded"
-            >
-              Generate Joke
-            </button>
-            <button
-              onClick={handleRandomObject}
-              className="bg-gray-500 text-white px-4 py-2 rounded"
-            >
-              Use Random Object
-            </button>
           </div>
         </div>
 
@@ -89,9 +95,7 @@ export default function Home() {
           </div>
         )}
 
-        {error && (
-          <p className="text-red-500 mt-4 text-center">{error}</p>
-        )}
+        {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
 
         {audioSrc && <AudioPlayer audioSrc={audioSrc} />}
       </div>
