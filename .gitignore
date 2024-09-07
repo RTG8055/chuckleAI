@@ -40,4 +40,4 @@ next-env.d.ts
 
 #pycache
 
-api/__pycache__/
+/api/__pycache__/
