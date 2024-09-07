@@ -1,6 +1,5 @@
 from openai import OpenAI
 import os
-from api.utils.constants import constants
 
 # Set your OpenAI API key here or using an environment variable
 #os.getenv("OPENAI_API_KEY")  # Alternatively, replace with your API key
@@ -24,10 +23,10 @@ def generate_joke(client: OpenAI,prompt: str, max_tokens=100):
     except Exception as e:
         return f"Error generating joke: {str(e)}"
 
-# Example usage
-if __name__ == "__main__":
-    client = OpenAI(api_key=constants.OPENAI_API_KEY)
+# # Example usage
+# if __name__ == "__main__":
+#     client = OpenAI(api_key=constants.OPENAI_API_KEY)
 
-    joke_prompt = "Create a small punch line joke using 'spoon'."
-    joke = generate_joke(client, joke_prompt)
-    print("Joke: ", joke)
+#     joke_prompt = "Create a small punch line joke using 'spoon'."
+#     joke = generate_joke(client, joke_prompt)
+#     print("Joke: ", joke)

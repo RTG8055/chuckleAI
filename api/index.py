@@ -1,10 +1,19 @@
 from fastapi import FastAPI
 from openai import OpenAI
+import os
 # from api.utils.constants import OPENAI_API_KEY
-# from api.jokeSystem.openai_create_joke import generate_joke
+from api.jokeSystem.openai_create_joke import generate_joke
 from pydantic import BaseModel, Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import List
 
+class Settings(BaseSettings):
+    app_name: str = "Awesome API"
+    admin_email: str
+    items_per_user: int = 50
+    model_config = SettingsConfigDict(env_file=".env")
+
+settings = Settings()
 app = FastAPI()
 
 class GenerateRequest(BaseModel):
@@ -14,18 +23,22 @@ class GenerateRequest(BaseModel):
     num_jokes: int = Field(default=1, ge=1, le=5)
 
 class GenerateResponse(BaseModel):
-    jokes: List[str]
+    
+    client = OpenAI(api_key= settings.model_config["OPENAI_API_KEY"])
+
+    def create_joke(things: List[str]):
+        joke_prompt = f"Create a small punch line joke using {','.join([thing for thing in things])} object."
+        print("Joke Prompt: ", joke_prompt)
+        joke = generate_joke(GenerateResponse.client, joke_prompt)
+        print("Created Joke: ", joke)
+        return joke
+    
 
 @app.post("/api/v1/generate", response_model=GenerateResponse)
 def generate_jokes(request: GenerateRequest) -> GenerateResponse:
-    # This is a placeholder. 
-    jokes: List[str] = [f"Joke {i+1} about {request.theme}" for i in range(request.num_jokes)]
-    
-    return GenerateResponse(jokes=jokes)
-
-# @app.post("/api/createjoke")
-# def create_joke():
-#     client = OpenAI(api_key=OPENAI_API_KEY)
-#     joke_prompt = "Create a small punch line joke using 'spoon'."
-#     joke = generate_joke(client, joke_prompt)
-#     print("Joke: ", joke)
+    things = []
+    if request.things:
+        things = request.things
+    if things == [] or things is None:
+        return GenerateResponse().create_joke(["spoon"])
+    return GenerateResponse().create_joke(things)
