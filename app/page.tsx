@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import ObjectSelection from "./components/ObjectSelection";
 import AudioPlayer from "./components/AudioPlayer";
@@ -12,6 +12,17 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [customObject, setCustomObject] = useState("");
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const sourceNodeRef = useRef<AudioBufferSourceNode | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
+      }
+    };
+  }, []);
 
   const handleObjectSelect = async (selectedObject: any) => {
     setLoading(true);
@@ -24,8 +35,23 @@ export default function Home() {
         object: customObject,
       });
 
-      // Assuming the response contains an audio URL
-      setAudioSrc(response.data.audioUrl);
+      console.log(response)
+
+      const audioResponse = await fetch('/api/tts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text: response.data.joke }),
+      });
+
+      if (!audioResponse.ok) {
+        throw new Error('Failed to generate audio');
+      }
+
+      const arrayBuffer = await audioResponse.arrayBuffer();
+      await playAudioBuffer(arrayBuffer);
+
     } catch (error) {
       setError("Failed to fetch the joke. Please try again.");
     } finally {
@@ -48,6 +74,28 @@ export default function Home() {
     const randomObject =
       randomObjects[Math.floor(Math.random() * randomObjects.length)];
     handleObjectSelect(randomObject);
+  };
+
+  const playAudioBuffer = async (arrayBuffer: ArrayBuffer) => {
+    if (!audioContextRef.current) {
+      audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+    }
+
+    const audioBuffer = await audioContextRef.current.decodeAudioData(arrayBuffer);
+
+    if (sourceNodeRef.current) {
+      sourceNodeRef.current.stop();
+    }
+
+    sourceNodeRef.current = audioContextRef.current.createBufferSource();
+    sourceNodeRef.current.buffer = audioBuffer;
+    sourceNodeRef.current.connect(audioContextRef.current.destination);
+    sourceNodeRef.current.start();
+    setIsPlaying(true);
+
+    sourceNodeRef.current.onended = () => {
+      setIsPlaying(false);
+    };
   };
 
   return (
